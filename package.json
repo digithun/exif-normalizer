@@ -4,7 +4,8 @@
   "description": "rotate and flip images to exif orientation",
   "main": "index.js",
   "scripts": {
-    "test": "webpack-dev-server 'mocha-loader!./test.js' --hot --inline --output-filename test.js"
+    "test": "webpack-dev-server 'mocha-loader!./test.js' --hot --inline --output-filename test.js",
+    "build": "babel exif.js -o index.js"
   },
   "repository": {
     "type": "git",
