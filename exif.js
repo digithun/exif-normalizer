@@ -2,25 +2,26 @@ import exif from "exif-js";
 
 
 export var EXIF_TRANSFORMS = {
-  1: {rotate: 0, flip: false},
-  2: {rotate: 0, flip: true},
-  3: {rotate: Math.PI, flip: false},
-  4: {rotate: Math.PI, flip: true},
-  5: {rotate: Math.PI * 1.5, flip: true},
-  6: {rotate: Math.PI * 0.5, flip: false},
-  7: {rotate: Math.PI * 0.5, flip: true},
-  8: {rotate: Math.PI * 1.5, flip: false},
+  1: { rotate: 0, flip: false },
+  2: { rotate: 0, flip: true },
+  3: { rotate: Math.PI, flip: false },
+  4: { rotate: Math.PI, flip: true },
+  5: { rotate: Math.PI * 1.5, flip: true },
+  6: { rotate: Math.PI * 0.5, flip: false },
+  7: { rotate: Math.PI * 0.5, flip: true },
+  8: { rotate: Math.PI * 1.5, flip: false },
 };
 
 
-export default async function resolveExif(image, maxWidth=800) {
+export default async function resolveExif(image, maxWidth = 800, type = 'url', quality = 0.95) {
+  if (!HTMLCanvasElement.prototype.toBlob) require("blueimp-canvas-to-blob")
 
   if (typeof image == "string") {
     image = await getImageFromUrl(image);
   }
 
-  let url = await new Promise(function(resolve, reject) {
-    exif.getData(image, function() {
+  let url = await new Promise(function (resolve, reject) {
+    exif.getData(image, function () {
       let orientation = exif.getTag(this, "Orientation");
       if (orientation) {
         let canvas = getCanvasForImage(image, maxWidth);
@@ -36,11 +37,27 @@ export default async function resolveExif(image, maxWidth=800) {
         let ctx = canvas.getContext("2d");
 
         exifTransformCanvas(ctx, orientation);
-        ctx.drawImage(image, 0, 0, image.width, image.height,
-                            -w / 2, -h / 2, w, h);
-        resolve(canvas.toDataURL());
+        ctx.drawImage(image, 0, 0, image.width, image.height, -w / 2, -h / 2, w, h);
+        if (type === 'blob')
+          canvas.toBlob(function (blob) {
+            console.log('toblob')
+            resolve(blob);
+          }, 'image/jpeg', quality);
+        else {
+          resolve(canvas.toDataURL());
+        }
       } else {
-        resolve(image.src);
+        if (type === 'blob') {
+          var canvas = getCanvasForImage(image, maxWidth);
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(image, 0, 0)
+          canvas.toBlob(function (blob) {
+            console.log('toblob')
+            resolve(blob);
+          }, 'image/jpeg', quality);
+        } else {
+          resolve(image.src);
+        }
       }
     });
   });
@@ -50,11 +67,11 @@ export default async function resolveExif(image, maxWidth=800) {
 
 
 export function getImageFromUrl(url) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     let image = new Image();
     image.crossOrigin = "anonymous";
-    image.onload = function() { resolve(image); };
-    image.onerror = function(e) { reject(e); };
+    image.onload = function () { resolve(image); };
+    image.onerror = function (e) { reject(e); };
     image.src = url;
   });
 }
@@ -84,7 +101,7 @@ export function exifTransformCanvas(ctx, orientation) {
   return ctx;
 }
 
-export function transformCanvas(ctx, degrees=0, flip=false) {
+export function transformCanvas(ctx, degrees = 0, flip = false) {
   ctx.translate(ctx.canvas.width / 2, ctx.canvas.height / 2);
   ctx.rotate(degrees);
   if (flip) {

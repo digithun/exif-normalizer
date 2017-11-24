@@ -1,6 +1,6 @@
 {
   "name": "exif-normalizer",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "rotate and flip images to exif orientation",
   "main": "index.js",
   "scripts": {
@@ -8,20 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VelocityWebworks/exif-normalizer.git"
+    "url": "git+https://github.com/digithun/exif-normalizer-blob.git"
   },
   "keywords": [
     "exif",
     "image",
     "browser"
   ],
-  "author": "John Leith",
+  "author": "mikeccuk2005",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/VelocityWebworks/exif-normalizer/issues"
+    "url": "https://github.com/digithun/exif-normalizer-blob/issues"
   },
-  "homepage": "https://github.com/VelocityWebworks/exif-normalizer#readme",
+  "homepage": "https://github.com/digithun/exif-normalizer-blob#readme",
   "dependencies": {
+    "blueimp-canvas-to-blob": "^3.14.0",
     "exif-js": "^2.1.1"
   },
   "devDependencies": {
