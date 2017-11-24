@@ -1,6 +1,6 @@
 {
   "name": "exif-normalizer-blob",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "rotate and flip images to exif orientation",
   "main": "index.js",
   "scripts": {
