@@ -23,42 +23,32 @@ export default async function resolveExif(image, maxWidth = 800, type = 'url', q
   let url = await new Promise(function (resolve, reject) {
     exif.getData(image, function () {
       let orientation = exif.getTag(this, "Orientation");
-      if (orientation) {
-        let canvas = getCanvasForImage(image, maxWidth);
-        let w = canvas.width;
-        let h = canvas.height;
+      let canvas = getCanvasForImage(image, maxWidth);
+      let w = canvas.width;
+      let h = canvas.height;
 
-        if (orientation > 4) {
-          let temp = canvas.width;
-          canvas.width = canvas.height;
-          canvas.height = temp;
-        }
+      let isPortrait = image.height > image.width
+      let transformX = isPortrait ? 0 : -w / 2
+      let transformY = isPortrait ? 0 : -h / 2
 
-        let ctx = canvas.getContext("2d");
-
-        exifTransformCanvas(ctx, orientation);
-        ctx.drawImage(image, 0, 0, image.width, image.height, -w / 2, -h / 2, w, h);
-        if (type === 'blob')
-          canvas.toBlob(function (blob) {
-            console.log('toblob')
-            resolve(blob);
-          }, 'image/jpeg', quality);
-        else {
-          resolve(canvas.toDataURL());
-        }
-      } else {
-        if (type === 'blob') {
-          var canvas = getCanvasForImage(image, maxWidth);
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(image, 0, 0)
-          canvas.toBlob(function (blob) {
-            console.log('toblob')
-            resolve(blob);
-          }, 'image/jpeg', quality);
-        } else {
-          resolve(image.src);
-        }
+      if (orientation > 4) {
+        let temp = canvas.width;
+        canvas.width = canvas.height;
+        canvas.height = temp;
       }
+
+      let ctx = canvas.getContext("2d");
+
+      exifTransformCanvas(ctx, orientation);
+      ctx.drawImage(image, 0, 0, image.width, image.height, transformX, transformY, w, h);
+      if (type === 'blob')
+        canvas.toBlob(function (blob) {
+          resolve(blob);
+        }, 'image/jpeg', quality);
+      else {
+        resolve(canvas.toDataURL());
+      }
+
     });
   });
 
