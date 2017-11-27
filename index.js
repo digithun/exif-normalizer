@@ -67,39 +67,28 @@ exports.default = function () {
             return new _promise2.default(function (resolve, reject) {
               _exifJs2.default.getData(image, function () {
                 var orientation = _exifJs2.default.getTag(this, "Orientation");
-                if (orientation) {
-                  var _canvas = getCanvasForImage(image, maxWidth);
-                  var w = _canvas.width;
-                  var h = _canvas.height;
+                var canvas = getCanvasForImage(image, maxWidth);
+                var w = canvas.width;
+                var h = canvas.height;
 
-                  if (orientation > 4) {
-                    var temp = _canvas.width;
-                    _canvas.width = _canvas.height;
-                    _canvas.height = temp;
-                  }
+                var isPortrait = image.height > image.width;
+                var transformX = isPortrait ? 0 : -w / 2;
+                var transformY = isPortrait ? 0 : -h / 2;
 
-                  var _ctx = _canvas.getContext("2d");
+                if (orientation > 4) {
+                  var temp = canvas.width;
+                  canvas.width = canvas.height;
+                  canvas.height = temp;
+                }
 
-                  exifTransformCanvas(_ctx, orientation);
-                  _ctx.drawImage(image, 0, 0, image.width, image.height, -w / 2, -h / 2, w, h);
-                  if (type === 'blob') _canvas.toBlob(function (blob) {
-                    console.log('toblob');
-                    resolve(blob);
-                  }, 'image/jpeg', quality);else {
-                    resolve(_canvas.toDataURL());
-                  }
-                } else {
-                  if (type === 'blob') {
-                    var canvas = getCanvasForImage(image, maxWidth);
-                    var ctx = canvas.getContext("2d");
-                    ctx.drawImage(image, 0, 0);
-                    canvas.toBlob(function (blob) {
-                      console.log('toblob');
-                      resolve(blob);
-                    }, 'image/jpeg', quality);
-                  } else {
-                    resolve(image.src);
-                  }
+                var ctx = canvas.getContext("2d");
+
+                exifTransformCanvas(ctx, orientation);
+                ctx.drawImage(image, 0, 0, image.width, image.height, transformX, transformY, w, h);
+                if (type === 'blob') canvas.toBlob(function (blob) {
+                  resolve(blob);
+                }, 'image/jpeg', quality);else {
+                  resolve(canvas.toDataURL());
                 }
               });
             });
