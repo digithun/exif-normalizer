@@ -1,19 +1,19 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.EXIF_TRANSFORMS = undefined;
 
-var _regenerator = require("babel-runtime/regenerator");
+var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _promise = require("babel-runtime/core-js/promise");
+var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -22,7 +22,7 @@ exports.getCanvasForImage = getCanvasForImage;
 exports.exifTransformCanvas = exifTransformCanvas;
 exports.transformCanvas = transformCanvas;
 
-var _exifJs = require("exif-js");
+var _exifJs = require('exif-js');
 
 var _exifJs2 = _interopRequireDefault(_exifJs);
 
@@ -49,9 +49,9 @@ exports.default = function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (!HTMLCanvasElement.prototype.toBlob) require("blueimp-canvas-to-blob");
+            if (!HTMLCanvasElement.prototype.toBlob) require('blueimp-canvas-to-blob');
 
-            if (!(typeof image == "string")) {
+            if (!(typeof image == 'string')) {
               _context.next = 5;
               break;
             }
@@ -66,14 +66,12 @@ exports.default = function () {
             _context.next = 7;
             return new _promise2.default(function (resolve, reject) {
               _exifJs2.default.getData(image, function () {
-                var orientation = _exifJs2.default.getTag(this, "Orientation");
+                var orientation = _exifJs2.default.getTag(this, 'Orientation');
                 var canvas = getCanvasForImage(image, maxWidth);
                 var w = canvas.width;
                 var h = canvas.height;
-
-                var isPortrait = image.height > image.width;
-                var transformX = isPortrait ? 0 : -w / 2;
-                var transformY = isPortrait ? 0 : -h / 2;
+                var transformX = 0;
+                var transformY = 0;
 
                 if (orientation > 4) {
                   var temp = canvas.width;
@@ -81,10 +79,15 @@ exports.default = function () {
                   canvas.height = temp;
                 }
 
-                var ctx = canvas.getContext("2d");
+                transformX = orientation > 4 ? 0 : -w / 2;
+                transformY = orientation > 4 ? 0 : -h / 2;
+
+
+                var ctx = canvas.getContext('2d');
 
                 exifTransformCanvas(ctx, orientation);
                 ctx.drawImage(image, 0, 0, image.width, image.height, transformX, transformY, w, h);
+
                 if (type === 'blob') canvas.toBlob(function (blob) {
                   resolve(blob);
                 }, 'image/jpeg', quality);else {
@@ -95,10 +98,10 @@ exports.default = function () {
 
           case 7:
             url = _context.sent;
-            return _context.abrupt("return", url);
+            return _context.abrupt('return', url);
 
           case 9:
-          case "end":
+          case 'end':
             return _context.stop();
         }
       }
@@ -115,7 +118,7 @@ exports.default = function () {
 function getImageFromUrl(url) {
   return new _promise2.default(function (resolve, reject) {
     var image = new Image();
-    image.crossOrigin = "anonymous";
+    image.crossOrigin = 'anonymous';
     image.onload = function () {
       resolve(image);
     };
@@ -127,7 +130,7 @@ function getImageFromUrl(url) {
 }
 
 function getCanvasForImage(image, maxWidth) {
-  var canvas = document.createElement("canvas");
+  var canvas = document.createElement('canvas');
   var w = image.width;
   var h = image.height;
 
@@ -142,11 +145,8 @@ function getCanvasForImage(image, maxWidth) {
 }
 
 function exifTransformCanvas(ctx, orientation) {
-  var transform = EXIF_TRANSFORMS[orientation];
-  if (transform) {
-    return transformCanvas(ctx, transform.rotate, transform.flip);
-  }
-  return ctx;
+  var transform = EXIF_TRANSFORMS[orientation] || EXIF_TRANSFORMS["1"];
+  return transformCanvas(ctx, transform.rotate, transform.flip);
 }
 
 function transformCanvas(ctx) {
