@@ -23,8 +23,8 @@ export default (async function resolveExif(
     image = await getImageFromUrl(image)
   }
 
-  let url = await new Promise(function(resolve, reject) {
-    exif.getData(image, function() {
+  let url = await new Promise(function (resolve, reject) {
+    exif.getData(image, function () {
       let orientation = exif.getTag(this, 'Orientation')
       let canvas = getCanvasForImage(image, maxWidth)
       let w = canvas.width
@@ -32,19 +32,17 @@ export default (async function resolveExif(
       let transformX = 0
       let transformY = 0
 
-      let isPortrait = orientation === "1"
-
-      console.log(image.width, canvas.width)
+      // console.log(image.width, canvas.width)
       if (orientation > 4) {
         let temp = canvas.width;
         canvas.width = canvas.height;
         canvas.height = temp;
       }
 
-      console.log(image.width, canvas.width)
-      transformX = isPortrait ? 0 : -w / 2
-      transformY = isPortrait ? 0 : -h / 2
-        console.log(transformX, transformY)
+      // console.log(image.width, canvas.width)
+      transformX = orientation > 4 ? 0 : -w / 2
+      transformY = orientation > 4 ? 0 : -h / 2
+      // console.log(transformX, transformY)
 
       let ctx = canvas.getContext('2d')
 
@@ -60,10 +58,10 @@ export default (async function resolveExif(
         w,
         h
       )
-      console.log('done')
+      // console.log('done')
       if (type === 'blob')
         canvas.toBlob(
-          function(blob) {
+          function (blob) {
             resolve(blob)
           },
           'image/jpeg',
@@ -79,13 +77,13 @@ export default (async function resolveExif(
 })
 
 export function getImageFromUrl(url) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     let image = new Image()
     image.crossOrigin = 'anonymous'
-    image.onload = function() {
+    image.onload = function () {
       resolve(image)
     }
-    image.onerror = function(e) {
+    image.onerror = function (e) {
       reject(e)
     }
     image.src = url
@@ -108,7 +106,7 @@ export function getCanvasForImage(image, maxWidth) {
 }
 
 export function exifTransformCanvas(ctx, orientation) {
-  console.log('orientation', orientation)
+  // console.log('orientation', orientation)
   let transform = EXIF_TRANSFORMS[orientation] || EXIF_TRANSFORMS["1"]
   return transformCanvas(ctx, transform.rotate, transform.flip)
 }
