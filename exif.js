@@ -32,16 +32,18 @@ export default (async function resolveExif(
       let transformX = 0
       let transformY = 0
 
-      // console.log(image.width, canvas.width)
+      // console.log('orientation', orientation)
       if (orientation > 4) {
         let temp = canvas.width;
         canvas.width = canvas.height;
         canvas.height = temp;
       }
 
+      let isPortrait = ['6', '8', '5', '7'].indexOf(orientation) > -1
+
       // console.log(image.width, canvas.width)
-      transformX = orientation > 4 ? 0 : -w / 2
-      transformY = orientation > 4 ? 0 : -h / 2
+      transformX = isPortrait ? 0 : -w / 2
+      transformY = isPortrait ? 0 : -h / 2
       // console.log(transformX, transformY)
 
       let ctx = canvas.getContext('2d')

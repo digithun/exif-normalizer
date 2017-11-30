@@ -57,7 +57,7 @@ describe('resolveExif', function () {
   it('Should UPSIZE image that larger than canvas size', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/IMG_0041.jpg', 5024, null, null, 'Should UPSIZE image that larger than canvas size')
+    return resolveExif('./test_images/IMG_0041.jpg', 5024)
       .then(function (result) {
         return getImageFromUrl(result)
       })
@@ -72,7 +72,7 @@ describe('resolveExif', function () {
   it('Should DOWNSIZE image that larger than canvas size', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/IMG_0041.jpg', 2000, null, null, 'Should DOWNSIZE image that larger than canvas size')
+    return resolveExif('./test_images/IMG_0041.jpg', 2000)
       .then(function (result) {
         return getImageFromUrl(result)
       })
@@ -88,7 +88,7 @@ describe('resolveExif', function () {
   it('Should UPSIZE ROTATE image that larger than canvas size', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/IMG_0042.jpg', 5024, null, null, 'Should UPSIZE ROTATE image that larger than canvas size')
+    return resolveExif('./test_images/IMG_0042.jpg', 5024)
       .then(function (result) {
         return getImageFromUrl(result)
       })
@@ -103,7 +103,7 @@ describe('resolveExif', function () {
   it('Should DOWNSIZE ROTATE image that larger than canvas size', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/IMG_0042.jpg', 2000, null, null, 'Should DOWNSIZE  ROTATE image that larger than canvas size')
+    return resolveExif('./test_images/IMG_0042.jpg', 2000)
       .then(function (result) {
         return getImageFromUrl(result)
       })
@@ -115,11 +115,41 @@ describe('resolveExif', function () {
       })
   })
 
+  it('IMG_0002 Should UPSIZE ROTATE image that larger than canvas size', function () {
+    const resultDiv = createResultDiv()
+    document.body.appendChild(resultDiv)
+    return resolveExif('./test_images/IMG_0002.jpg', 5024)
+      .then(function (result) {
+        return getImageFromUrl(result)
+      })
+      .then(function (image) {
+        image.style.width = "300px"
+        resultDiv.appendChild(image)
+        assert.equal(image.width, 200)
+        assert.equal(image.height, 150)
+      })
+  })
+
+  it(' IMG_0002 Should DOWNSIZE ROTATE image that larger than canvas size', function () {
+    const resultDiv = createResultDiv()
+    document.body.appendChild(resultDiv)
+    return resolveExif('./test_images/IMG_0002.jpg', 2000)
+      .then(function (result) {
+        return getImageFromUrl(result)
+      })
+      .then(function (image) {
+        image.style.width = "300px"
+        resultDiv.appendChild(image)
+        assert.equal(image.width, 200)
+        assert.equal(image.height, 150)
+      })
+  })
+ 
 
   it('Can UPSIZE image that smaller than canvas size correctly', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/BAY.png', 200, null, null, 'Can UPSIZE image that smaller than canvas size correctly')
+    return resolveExif('./test_images/BAY.png', 200)
       .then(function (result) {
         return getImageFromUrl(result)
       })
@@ -133,7 +163,7 @@ describe('resolveExif', function () {
   it('Can DOWNSIZE image that smaller than canvas size correctly', function () {
     const resultDiv = createResultDiv()
     document.body.appendChild(resultDiv)
-    return resolveExif('./test_images/BAY.png', 200, null, null, 'Can DOWNSIZE image that smaller than canvas size correctly')
+    return resolveExif('./test_images/BAY.png', 200)
       .then(function (result) {
         return getImageFromUrl(result)
       })
