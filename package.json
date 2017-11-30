@@ -36,6 +36,7 @@
     "jsdom": "^9.8.3",
     "mocha": "^3.2.0",
     "mocha-loader": "^1.1.0",
-    "webpack": "^1.14.0"
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.5"
   }
 }

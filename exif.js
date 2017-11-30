@@ -28,8 +28,10 @@ export default async function resolveExif(image, maxWidth = 800, type = 'url', q
       let h = canvas.height;
 
       let isPortrait = image.height > image.width
-      let transformX = isPortrait ? 0 : -w / 2
-      let transformY = isPortrait ? 0 : -h / 2
+      let isLarger = canvas.width < image.width;
+      
+      let transformX = !isLarger ? 0 : -w / 2
+      let transformY = !isLarger ? 0 : -h / 2
 
       if (orientation > 4) {
         let temp = canvas.width;
