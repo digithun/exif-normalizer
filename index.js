@@ -79,8 +79,10 @@ exports.default = function () {
                   canvas.height = temp;
                 }
 
-                transformX = orientation > 4 ? 0 : -w / 2;
-                transformY = orientation > 4 ? 0 : -h / 2;
+                var isPortrait = ['6', '8', '5', '7'].indexOf(orientation) > -1;
+
+                transformX = isPortrait ? 0 : -w / 2;
+                transformY = isPortrait ? 0 : -h / 2;
 
 
                 var ctx = canvas.getContext('2d');
